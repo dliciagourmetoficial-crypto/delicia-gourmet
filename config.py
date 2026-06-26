@@ -1,0 +1,3 @@
+TOKEN = "8586272425:AAH-_n7qex2blV7k-l97iuEzwY1fnqhaRqg"
+ADMINS = [8671594713, 8559372608]
+DB_NAME = "bot_pedidos.db"
