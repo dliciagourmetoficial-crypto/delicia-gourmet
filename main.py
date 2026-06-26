@@ -2,8 +2,17 @@ import logging
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from config import TOKEN, ADMINS
+import database
+from http.server import HTTPServer, SimpleHTTPRequestHandler
+import threading
 
-logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
+# Función para el servidor falso que mantiene a Render feliz
+def run_server():
+    server = HTTPServer(('0.0.0.0', 8080), SimpleHTTPRequestHandler)
+    server.serve_forever()
+
+database.init_db()
+logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
