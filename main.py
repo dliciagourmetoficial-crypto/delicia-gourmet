@@ -49,22 +49,33 @@ async def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
-    texto = update.message.text
+    message = update.message
     
-    # 1. Si el admin escribe, enviar al cliente que atiende
+    # Identificar quién es el destinatario
+    destinatario_id = None
     if user_id in ADMINS and user_id in conversaciones_activas:
-        cliente_id = conversaciones_activas[user_id]
-        await context.bot.send_message(cliente_id, f"Admin: {texto}")
-        
-    # 2. Si el cliente escribe, enviar al admin que lo atiende
+        destinatario_id = conversaciones_activas[user_id]
     else:
-        # Buscamos qué admin tiene a este cliente en su sesión
         admin_id = next((admin for admin, client in conversaciones_activas.items() if client == user_id), None)
         if admin_id:
-            await context.bot.send_message(admin_id, f"Cliente: {texto}")
-        else:
-            # Si nadie lo atiende, aquí puedes decidir qué hacer (ej: avisar que espere)
-            pass
+            destinatario_id = admin_id
+            
+    if destinatario_id:
+        # --- Lógica de reenvío de archivos ---
+        if message.text:
+            await context.bot.send_message(destinatario_id, f"{update.effective_user.first_name}: {message.text}")
+        elif message.photo:
+            await context.bot.send_photo(destinatario_id, message.photo[-1].file_id, caption=message.caption)
+        elif message.document:
+            await context.bot.send_document(destinatario_id, message.document.file_id, caption=message.caption)
+        elif message.sticker:
+            await context.bot.send_sticker(destinatario_id, message.sticker.file_id)
+        elif message.animation: # Para GIFs
+            await context.bot.send_animation(destinatario_id, message.animation.file_id, caption=message.caption)
+        elif message.audio:
+            await context.bot.send_audio(destinatario_id, message.audio.file_id)
+        elif message.video:
+            await context.bot.send_video(destinatario_id, message.video.file_id, caption=message.caption)
 
 async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.effective_user.id
