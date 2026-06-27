@@ -46,7 +46,14 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del conversaciones_activas[admin_id]
     
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import CallbackQueryHandler
+from telegram.ext import (
+    ApplicationBuilder, 
+    ContextTypes, 
+    CommandHandler, 
+    MessageHandler, 
+    filters, 
+    CallbackQueryHandler
+)
 from config import TOKEN, ADMINS
 import database
 from database import init_db, obtener_todos_los_pedidos, eliminar_de_sheets
