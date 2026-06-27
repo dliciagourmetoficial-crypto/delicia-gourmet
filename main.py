@@ -38,25 +38,43 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    pedido_texto = update.message.text
-    guardar_pedido(user.full_name, user.id, pedido_texto)
     
     if user.id in ADMINS:
-        # Lógica para administradores: mostrar clientes
-        await update.message.reply_text("Lista de clientes activos (Simulación):")
-        # Aquí iría la consulta a la BD
+        # Lógica para administradores: Leer pedidos de la hoja
+        # Aquí supongo que tu hoja se llama "pedido" (ajusta si es necesario)
+        hoja = worksheet.get_all_records() 
+        if not hoja:
+            await update.message.reply_text("No hay pedidos registrados.")
+            return
+            
+        # Creamos una lista de botones con los últimos pedidos
+        keyboard = []
+        for fila in hoja:
+            # Asumiendo columnas: 'nombre' y 'id'
+            nombre = fila.get('nombre', 'Sin nombre')
+            chat_id = fila.get('id', 'N/A')
+            # Botón que al presionar abre el chat
+            btn_url = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={chat_id}&nombre={str(nombre).replace(' ', '%20')}"
+            keyboard.append([InlineKeyboardButton(f"Chat con {nombre}", url=btn_url)])
+        
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await update.message.reply_text("Lista de clientes activos:", reply_markup=reply_markup)
+
     else:
-        # Lógica para cliente: Notificar a admins
+        # Lógica para cliente: Registrar pedido y notificar
+        pedido_texto = update.message.text
+        guardar_pedido(user.full_name, user.id, pedido_texto)
+        
         for admin_id in ADMINS:
             url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
             keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await context.bot.send_message(
                 chat_id=admin_id,
-                text=f"🔔 Nuevo pedido manual:\nID: {user.id}\nNombre: {user.full_name}",
+                text=f"🔔 Nuevo pedido:\nID: {user.id}\nNombre: {user.full_name}",
                 reply_markup=reply_markup
             )
-        await update.message.reply_text("¡Pedido recibido con éxito! ✅ Tu solicitud ya ha sido enviada a nuestros administradores. 🚀")
+        await update.message.reply_text("¡Pedido recibido con éxito! ✅/n Nos comunicaremos con tigo pronto. 🚀")
              
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Si el usuario no es admin, reenviar a admins
