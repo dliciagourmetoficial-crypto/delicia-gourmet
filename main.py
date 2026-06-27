@@ -48,8 +48,8 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import CallbackQueryHandler
 from config import TOKEN, ADMINS
-from database import guardar_pedido, obtener_pedidos, eliminar_de_sheets
 import database
+from database import init_db, obtener_todos_los_pedidos, eliminar_de_sheets
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
 
