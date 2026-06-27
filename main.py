@@ -35,14 +35,16 @@ async def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = query.from_user.id
     admin_nombre = query.from_user.full_name
     
-    # Extraemos el ID del cliente del botón (ej: "atender_123456")
+    # Extraemos el ID Y NOMBRE del cliente del botón (ej: "atender_123456")
     cliente_id = int(query.data.split("_")[1])
+    cell = sheet.find(str(cliente_id), in_column=3)
+    cliente_nombre = sheet.cell(cell.row, 2).value
     
     # Guardamos la relación: ¿Quién atiende a quién?
     conversaciones_activas[admin_id] = cliente_id
     
     await query.answer("Conectado con el cliente.")
-    await query.edit_message_text(f"✅ Ahora estás hablando con el cliente {cliente_id}")
+    await query.edit_message_text(f"✅ Ahora estás hablando con el cliente {cliente_nombre}")
     
     # Notificar al cliente
     await context.bot.send_message(cliente_id, f"✅ Hola, soy {admin_nombre} y te voy a ayudar con tu pedido.")
@@ -105,6 +107,8 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # --- Fin de Funciones ---
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+         
+    if not update.effective_user.id in ADMINS:
     await update.message.reply_text("¡Bienvenido a Delicias Gourmet! Escribe /pedido para iniciar.")
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -121,6 +125,23 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Lógica de cliente: Guardar en Sheet
         guardar_pedido_en_sheet(user.full_name, user.id)
         await update.message.reply_text("Pedido recibido. ✅")
+
+        nombre_codificado = user.full_name.replace(' ', '%20') # Reemplazamos espacios por %20 para la URL
+        url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={nombre_codificado}"
+        
+        keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        
+        for admin_id in ADMINS:
+            try:
+                await context.bot.send_message(
+                    chat_id=admin_id,
+                    text=f"🔔 Nuevo pedido recibido:\n\n👤 Cliente: {user.full_name}\n🆔 ID: {user.id}",
+                    reply_markup=reply_markup
+                )
+            except Exception as e:
+                logging.error(f"No se pudo enviar aviso al admin {admin_id}: {e}")
+                     
 
 if __name__ == '__main__':
     # Iniciar servidor web necesario para Render
