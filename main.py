@@ -134,7 +134,7 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("pedido", pedido))
     application.add_handler(CommandHandler("end", terminar_chat))
-    application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
+    application.add_handler(MessageHandler(filters.ALL & (~filters.COMMAND), handle_message))
     # ... agrega tus otros handlers aquí ...
     
     application.run_polling()
