@@ -70,7 +70,7 @@ logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    await update.message.reply_text(f"¡Hola {user.first_name}! 👋 Bienvenido a Delicias Gourmet.\n Puedes realizar tu pedido desde la pagina 👇\n\n Si quieres hacerlo manual escribe /pedido para comunicarte con nosotros")
+    await update.message.reply_text(f"¡Hola {user.first_name}! 👋 Bienvenido a Delicias Gourmet.\n Puedes realizar tu pedido desde la pagina\n Si quieres hacerlo manual escribe /pedido para comunicarte con nosotros")
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
