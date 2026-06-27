@@ -25,9 +25,9 @@ def run_server():
     server.serve_forever()
 
 # --- Funciones ---
-def guardar_pedido_en_sheet(nombre, chat_id, pedido):
+def guardar_pedido_en_sheet(nombre, chat_id):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    sheet.append_row([fecha, nombre, chat_id, pedido])
+    sheet.append_row([fecha, nombre, chat_id])
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text("¡Bienvenido a Delicias Gourmet! Escribe /pedido para iniciar.")
@@ -44,7 +44,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 await update.message.reply_text(f"🔔 Pedido de: {p['nombre']}", reply_markup=InlineKeyboardMarkup(keyboard))
     else:
         # Lógica de cliente: Guardar en Sheet
-        guardar_pedido_en_sheet(user.full_name, user.id, update.message.text or "Sin texto")
+        guardar_pedido_en_sheet(user.full_name, user.id)
         await update.message.reply_text("Pedido recibido. ✅")
 
 if __name__ == '__main__':
