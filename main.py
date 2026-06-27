@@ -4,6 +4,7 @@ import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
+from database import guardar_pedido, obtener_pedidos, eliminar_de_sheets
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
@@ -68,27 +69,20 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     
     if user.id in ADMINS:
-        # Lógica para administradores: Leer pedidos de la hoja
-        # Aquí supongo que tu hoja se llama "pedido" (ajusta si es necesario)
-        hoja = worksheet.get_all_records() 
-        if not hoja:
-            await update.message.reply_text("No hay pedidos registrados.")
-            return
-            
-        # Creamos una lista de botones con los últimos pedidos
-        keyboard = []
-        for fila in hoja:
-            # Asumiendo columnas: 'nombre' y 'id'
-            nombre = fila.get('nombre', 'Sin nombre')
-            chat_id = fila.get('id', 'N/A')
-            # Botón que al presionar abre el chat
-            btn_callback = f"atender_{user.id}"
-            keyboard = [[InlineKeyboardButton("Atender Cliente", callback_data=btn_callback)]]
-        
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await update.message.reply_text("Lista de clientes activos:", reply_markup=reply_markup)
-
+        # Aquí sí llamamos a tu función de database.py
+        lista_pedidos = obtener_pedidos() 
+             
+        if not lista_pedidos:
+            await update.message.reply_text("No hay pedidos pendientes.")
+        else:
+            for pedido in lista_pedidos:
+                # Aquí generas el botón usando los datos que vienen de la hoja
+                # Asumiendo que las columnas son 'nombre' y 'id'
+                nombre = pedido['nombre']
+                id_cliente = pedido['id']
+                # ... lógica del botón ...
     else:
+        # Tu lógica de cliente normal
         # Lógica para cliente: Registrar pedido y notificar
         pedido_texto = update.message.text
         guardar_pedido(user.full_name, user.id, pedido_texto)
