@@ -34,7 +34,7 @@ logging.basicConfig(level=logging.INFO)
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
-    await update.message.reply_text(f"¡Hola {user.first_name}! 👋 Bienvenido a Delicias Gourmet. Puedes realizar tu pedido desde la pagina, o si quieres hacerlo manual escribe /pedido para comunicarte con nosotros")
+    await update.message.reply_text(f"¡Hola {user.first_name}! 👋 Bienvenido a Delicias Gourmet.\n Puedes realizar tu pedido desde la pagina\n Si quieres hacerlo manual escribe /pedido para comunicarte con nosotros")
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
@@ -47,7 +47,8 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # Lógica para cliente: Notificar a admins
         for admin_id in ADMINS:
-            keyboard = [[InlineKeyboardButton("Abrir Chat", callback_data=f"chat_{user.id}")]]
+         url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
+            keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
             reply_markup = InlineKeyboardMarkup(keyboard)
             await context.bot.send_message(
                 chat_id=admin_id,
