@@ -39,11 +39,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
     pedido_texto = update.message.text
-    guardar_pedido(user.full_name, user.id, pedido_texto)if user.id in ADMINS:
-        # Lógica para administradores
+    guardar_pedido(user.full_name, user.id, pedido_texto)
+    
+    if user.id in ADMINS:
+        # Lógica para administradores: mostrar clientes
         await update.message.reply_text("Lista de clientes activos (Simulación):")
+        # Aquí iría la consulta a la BD
     else:
-        # Lógica para cliente
+        # Lógica para cliente: Notificar a admins
         for admin_id in ADMINS:
             url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
             keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
@@ -54,7 +57,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 reply_markup=reply_markup
             )
         await update.message.reply_text("¡Pedido recibido con éxito! ✅ Tu solicitud ya ha sido enviada a nuestros administradores. 🚀")
-
+             
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Si el usuario no es admin, reenviar a admins
     if update.effective_user.id not in ADMINS:
