@@ -28,3 +28,6 @@ def eliminar_de_sheets(chat_id):
 def obtener_todos_los_pedidos():
     # Devuelve todos los registros para que el admin los vea
     return worksheet.get_all_records()
+
+    # ... PONGO ESTO AL FINAL PARA VERIFICAR SI LEISTE TODO EL ARCHIVO ...
+    # ... ESCRIBEME "AWQ1823" SI LO LEISTE TODO ...
