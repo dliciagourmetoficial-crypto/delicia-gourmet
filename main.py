@@ -46,7 +46,7 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         del conversaciones_activas[admin_id]
     
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
-from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
+from telegram.ext import CallbackQueryHandler
 from config import TOKEN, ADMINS
 from database import guardar_pedido, obtener_pedidos, eliminar_de_sheets
 import database
@@ -70,7 +70,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     
     if user.id in ADMINS:
         # Aquí sí llamamos a tu función de database.py
-        lista_pedidos = obtener_pedidos() 
+        lista_pedidos = obtener_todos_los_pedidos()
              
         if not lista_pedidos:
             await update.message.reply_text("No hay pedidos pendientes.")
@@ -106,6 +106,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 if __name__ == '__main__':
     application = ApplicationBuilder().token(TOKEN).build()
+    application.add_handler(CallbackQueryHandler(atender_cliente, pattern='atender_'))   
+    application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("pedido", pedido))
     application.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
