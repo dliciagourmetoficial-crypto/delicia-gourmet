@@ -1,5 +1,7 @@
 import sqlite3
 from config import DB_NAME
+app.add_handler(CallbackQueryHandler(atender_cliente, pattern='^atender_'))
+app.add_handler(CommandHandler("end", terminar_chat))
 
 def init_db():
     conn = sqlite3.connect(DB_NAME)
