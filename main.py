@@ -46,14 +46,14 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Aquí iría la consulta a la BD
     else:
         # Lógica para cliente: Notificar a admins
-         for admin_id in ADMINS:
-        url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
-        keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await context.bot.send_message(
-            chat_id=admin_id,
-            text=f"🔔 Nuevo pedido manual:\nID: {user.id}\nNombre: {user.full_name}",
-            reply_markup=reply_markup
+ for admin_id in ADMINS:
+         url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
+         keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
+         reply_markup = InlineKeyboardMarkup(keyboard)
+         await context.bot.send_message(
+         chat_id=admin_id,
+         text=f"🔔 Nuevo pedido manual:\nID: {user.id}\nNombre: {user.full_name}",
+         reply_markup=reply_markup
         )
         await update.message.reply_text("¡Pedido recibido con éxito! ✅\nTu solicitud ya ha sido enviada a nuestros administradores. 🚀")
 
