@@ -17,6 +17,33 @@ conversaciones_activas = {}
 def guardar_pedido(nombre, chat_id, pedido):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     sheet.append_row([fecha, nombre, chat_id, pedido])
+
+def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    admin_id = query.from_user.id
+    admin_nombre = query.from_user.full_name
+    cliente_id = query.data.split("_")[1]
+    
+    conversaciones_activas[admin_id] = cliente_id
+    
+    await query.answer()
+    # Notificar al admin
+    await query.edit_message_text(f"✅ Ahora estás hablando con el cliente {cliente_id}")
+    # Notificar al cliente
+    await context.bot.send_message(cliente_id, f"✅ Ahora estás hablando con {admin_nombre}")
+         
+async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    admin_id = update.effective_user.id
+    if admin_id in conversaciones_activas:
+        cliente_id = conversaciones_activas[admin_id]
+        
+        # Borrar de Sheets (debes tener una función que busque y elimine por ID)
+        eliminar_de_sheets(cliente_id) 
+        
+        await update.message.reply_text("Chat finalizado.")
+        await context.bot.send_message(cliente_id, "El administrador se ha desconectado... ❌")
+        
+        del conversaciones_activas[admin_id]
     
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
