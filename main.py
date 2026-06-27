@@ -4,7 +4,6 @@ import json
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
-from database import guardar_pedido, obtener_pedidos, eliminar_de_sheets
 scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/auth/spreadsheets',
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
 
@@ -49,6 +48,7 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, ContextTypes, CommandHandler, MessageHandler, filters
 from config import TOKEN, ADMINS
+from database import guardar_pedido, obtener_pedidos, eliminar_de_sheets
 import database
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 import threading
