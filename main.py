@@ -18,6 +18,7 @@ scope = ["https://spreadsheets.google.com/feeds", 'https://www.googleapis.com/au
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open("pedido").sheet1
+conversaciones_activas = {}
 
 # --- Servidor para Render ---
 def run_server():
@@ -118,6 +119,7 @@ if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
     
     application = ApplicationBuilder().token(TOKEN).build()
+    application.add_handler(CallbackQueryHandler(atender_cliente, pattern='^atender_'))
     application.add_handler(CommandHandler("start", start))
     application.add_handler(CommandHandler("pedido", pedido))
     application.add_handler(CommandHandler("end", terminar_chat))
