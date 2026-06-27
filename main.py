@@ -12,6 +12,7 @@ creds_dict = json.loads(os.environ['GOOGLE_APPLICATION_CREDENTIALS_JSON'])
 creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
 sheet = client.open("pedido").sheet1
+conversaciones_activas = {}
 
 def guardar_pedido(nombre, chat_id, pedido):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -54,8 +55,8 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
             nombre = fila.get('nombre', 'Sin nombre')
             chat_id = fila.get('id', 'N/A')
             # Botón que al presionar abre el chat
-            btn_url = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={chat_id}&nombre={str(nombre).replace(' ', '%20')}"
-            keyboard.append([InlineKeyboardButton(f"Chat con {nombre}", url=btn_url)])
+            btn_callback = f"atender_{user.id}"
+            keyboard = [[InlineKeyboardButton("Atender Cliente", callback_data=btn_callback)]]
         
         reply_markup = InlineKeyboardMarkup(keyboard)
         await update.message.reply_text("Lista de clientes activos:", reply_markup=reply_markup)
