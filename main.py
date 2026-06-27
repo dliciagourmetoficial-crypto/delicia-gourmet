@@ -70,10 +70,23 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if admin_id in conversaciones_activas:
         cliente_id = conversaciones_activas[admin_id]
         
-        await context.bot.send_message(cliente_id, f"{update.effective_user.full_name} se ha desconectado... ❌")
-        await update.message.reply_text("Chat finalizado.")
+        # --- NUEVA FUNCIÓN: Borrar de Google Sheets ---
+        try:
+            # Buscamos la celda que contiene el ID del cliente en la columna C (columna 3)
+            cell = sheet.find(str(cliente_id), in_column=3)
+            if cell:
+                sheet.delete_rows(cell.row)
+                logging.info(f"Fila eliminada de Sheets para cliente {cliente_id}")
+        except Exception as e:
+            logging.error(f"Error al borrar de Sheets: {e}")
+        # ---------------------------------------------
         
-        del conversaciones_activas[admin_id] # Borramos la conexión
+        # Notificar al cliente y al admin
+        await context.bot.send_message(cliente_id, f"{update.effective_user.first_name} se ha desconectado... ❌")
+        await update.message.reply_text("Chat finalizado y pedido eliminado de la lista.")
+        
+        # Limpiamos la memoria
+        del conversaciones_activas[admin_id]
     else:
         await update.message.reply_text("No hay ningún chat activo para terminar.")
 
