@@ -19,7 +19,7 @@ def guardar_pedido(nombre, chat_id, pedido):
     fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     sheet.append_row([fecha, nombre, chat_id, pedido])
 
-def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
+async def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     admin_id = query.from_user.id
     admin_nombre = query.from_user.full_name
