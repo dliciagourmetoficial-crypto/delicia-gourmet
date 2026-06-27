@@ -108,7 +108,6 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
          
-    if not update.effective_user.id in ADMINS:
     await update.message.reply_text("¡Bienvenido a Delicias Gourmet! Escribe /pedido para iniciar.")
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
