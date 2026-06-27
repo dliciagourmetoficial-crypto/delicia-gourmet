@@ -47,7 +47,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # Lógica para cliente: Notificar a admins
          for admin_id in ADMINS:
-         url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
+        url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={user.full_name.replace(' ', '%20')}"
         keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         await context.bot.send_message(
