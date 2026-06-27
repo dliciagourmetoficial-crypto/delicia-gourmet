@@ -11,4 +11,14 @@ def init_db():
     conn.commit()
     conn.close()
 
-# Funciones para insertar y borrar chats se manejarán en main.py
+def eliminar_de_sheets(chat_id):
+    # Buscamos la fila que coincida con el ID
+    cell = worksheet.find(str(chat_id))
+    if cell:
+        worksheet.delete_rows(cell.row)
+        return True
+    return False
+
+def obtener_todos_los_pedidos():
+    # Devuelve todos los registros para que el admin los vea
+    return worksheet.get_all_records()
