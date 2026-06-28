@@ -47,7 +47,7 @@ async def atender_cliente(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await query.edit_message_text(f"✅ Ahora estás hablando con el cliente {cliente_nombre}")
     
     # Notificar al cliente
-    await context.bot.send_message(cliente_id, f"✅ Hola, soy {admin_nombre} y te voy a ayudar con tu pedido.")
+    await context.bot.send_message(cliente_id, f"✅ Hola, Hablas con {admin_nombre}, es un gusto atenderte, que vas a ordenar?")
 
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.effective_user.id
@@ -108,7 +108,14 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
          
-    await update.message.reply_text("¡Bienvenido a Delicias Gourmet! Escribe /pedido para iniciar.")
+         user = update.effective_user
+         mensaje = (
+                 f"👋 ¡Hola, {user.full_name}! \n"
+                 f"✨ Bienvenid@ a **Delicias Gourmet**! 🍱\n\n"
+                 f"👉 Para realizar su pedido pulse /pedido y lo atenderemos. 📝\n\n"
+                 f"📱 O también puede realizar su pedido desde nuestra Mini App 🔗"
+          )
+         await update.message.reply_text(mensaje, parse_mode="Markdown")
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
@@ -123,19 +130,24 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # Lógica de cliente: Guardar en Sheet
         guardar_pedido_en_sheet(user.full_name, user.id)
-        await update.message.reply_text("Pedido recibido. ✅")
+             
+         await update.message.reply_text(
+            "✅ **¡Pedido recibido con éxito!** 🎊\n\n"
+            "⏳ Está en la lista. En un momento nos pondremos en contacto con usted para confirmar los detalles. 🚀",
+            parse_mode="Markdown"
+        )
 
         nombre_codificado = user.full_name.replace(' ', '%20') # Reemplazamos espacios por %20 para la URL
         url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={nombre_codificado}"
         
-        keyboard = [[InlineKeyboardButton(text="Abrir Chat", url=url_chat)]]
+        keyboard = [[InlineKeyboardButton(text="Agregar a la pagina", url=url_chat)]]
         reply_markup = InlineKeyboardMarkup(keyboard)
         
         for admin_id in ADMINS:
             try:
                 await context.bot.send_message(
                     chat_id=admin_id,
-                    text=f"🔔 Nuevo pedido recibido:\n\n👤 Cliente: {user.full_name}\n🆔 ID: {user.id}",
+                    text=f"🔔 Nuevo pedido manual:\n\n👤 Cliente: {user.full_name}\n🆔 ID: {user.id}",
                     reply_markup=reply_markup
                 )
             except Exception as e:
