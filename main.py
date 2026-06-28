@@ -128,9 +128,8 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 keyboard = [[InlineKeyboardButton(text="Atender", callback_data=f"atender_{p['id']}")]]
                 await update.message.reply_text(f"🔔 Pedido de: {p['nombre']}", reply_markup=InlineKeyboardMarkup(keyboard))
     else:
-        # Lógica de cliente: Guardar en Sheet
-             
-         ids_en_sheets = sheet.col_values(3) # Columna C
+        # Lógica de cliente: Guardar en Sheet             
+        ids_en_sheets = sheet.col_values(3) # Columna C
         
         if str(user.id) in ids_en_sheets:
             # Si el ID ya existe, enviamos el mensaje de aviso
@@ -138,7 +137,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 "⏳ **Ya su petición está en la lista**, en breve lo atenderemos. 🍕",
                 parse_mode="Markdown"
             )
-         else:
+        else:
             # Si no existe, lo guardamos normalmente
             guardar_pedido_en_sheet(user.full_name, user.id)
              
