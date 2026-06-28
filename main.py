@@ -3,6 +3,7 @@ import os
 import json
 import gspread
 import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
 from datetime import datetime
 from oauth2client.service_account import ServiceAccountCredentials
 from http.server import HTTPServer, SimpleHTTPRequestHandler
@@ -21,16 +22,23 @@ sheet = client.open("pedido").sheet1
 conversaciones_activas = {}
 
 # --- Servidor para Render ---
-from http.server import HTTPServer, BaseHTTPRequestHandler
 
 class HealthCheckHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"OK")
+             
+    def do_HEAD(self):
+        self.send_response(200)
+        self.end_headers()
+             
+    def log_message(self, format, *args):
+        return
 
 def run_server():
     server = HTTPServer(('0.0.0.0', 8080), HealthCheckHandler)
+    print("Servidor web iniciado en el puerto 8080")
     server.serve_forever()
 
 # --- Funciones ---
