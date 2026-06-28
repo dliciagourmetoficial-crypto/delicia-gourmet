@@ -122,14 +122,25 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if user.id in ADMINS:
         lista_pedidos = sheet.get_all_records()
         if not lista_pedidos:
-            await update.message.reply_text("No hay pedidos pendientes.")
+            await update.message.reply_text("🚫 No hay pedidos pendientes.")
         else:
             for p in lista_pedidos:
                 keyboard = [[InlineKeyboardButton(text="Atender", callback_data=f"atender_{p['id']}")]]
                 await update.message.reply_text(f"🔔 Pedido de: {p['nombre']}", reply_markup=InlineKeyboardMarkup(keyboard))
     else:
         # Lógica de cliente: Guardar en Sheet
-        guardar_pedido_en_sheet(user.full_name, user.id)
+             
+         ids_en_sheets = sheet.col_values(3) # Columna C
+        
+        if str(user.id) in ids_en_sheets:
+            # Si el ID ya existe, enviamos el mensaje de aviso
+            await update.message.reply_text(
+                "⏳ **Ya su petición está en la lista**, en breve lo atenderemos. 🍕",
+                parse_mode="Markdown"
+            )
+         else:
+            # Si no existe, lo guardamos normalmente
+            guardar_pedido_en_sheet(user.full_name, user.id)
              
          await update.message.reply_text(
             "✅ **¡Pedido recibido con éxito!** 🎊\n\n"
