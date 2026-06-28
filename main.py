@@ -21,8 +21,16 @@ sheet = client.open("pedido").sheet1
 conversaciones_activas = {}
 
 # --- Servidor para Render ---
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
 def run_server():
-    server = HTTPServer(('0.0.0.0', 8080), SimpleHTTPRequestHandler)
+    server = HTTPServer(('0.0.0.0', 8080), HealthCheckHandler)
     server.serve_forever()
 
 # --- Funciones ---
