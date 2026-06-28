@@ -138,7 +138,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f"✨ Bienvenid@ a **Delicias Gourmet**! 🍱\n\n"
                  f"👉 Para realizar su pedido pulse /pedido y lo atenderemos. 📝\n\n"
                  f"📱 O también puede realizar su pedido desde nuestra Mini App 🔗",
-                  reply_markup=reply_markup
+                 reply_markup=reply_markup
           )
          await update.message.reply_text(mensaje, parse_mode="Markdown")
 
