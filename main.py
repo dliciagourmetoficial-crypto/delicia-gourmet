@@ -128,12 +128,17 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
          
+         keyboard = [
+        [InlineKeyboardButton("🛒 Ir a nuestra Web", url="https://delicia-gourmet.gt.tc/index.php")]
+         ]
+         reply_markup = InlineKeyboardMarkup(keyboard)
          user = update.effective_user
          mensaje = (
                  f"👋 ¡Hola, {user.full_name}! \n"
                  f"✨ Bienvenid@ a **Delicias Gourmet**! 🍱\n\n"
                  f"👉 Para realizar su pedido pulse /pedido y lo atenderemos. 📝\n\n"
-                 f"📱 O también puede realizar su pedido desde nuestra Mini App 🔗"
+                 f"📱 O también puede realizar su pedido desde nuestra Mini App 🔗",
+                  reply_markup=reply_markup
           )
          await update.message.reply_text(mensaje, parse_mode="Markdown")
 
