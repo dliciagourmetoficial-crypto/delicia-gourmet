@@ -65,7 +65,9 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if destinatario_id:
         # --- Lógica de reenvío de archivos ---
         if message.text:
-            await context.bot.send_message(destinatario_id, f"👤 *{update.effective_user.first_name}:*\n {message.text}")
+            await context.bot.send_message(destinatario_id, 
+                f"<b>{update.effective_user.first_name}:</b>\n{message.text}", 
+                parse_mode="HTML")
         elif message.photo:
             await context.bot.send_photo(destinatario_id, message.photo[-1].file_id, caption=message.caption)
         elif message.document:
