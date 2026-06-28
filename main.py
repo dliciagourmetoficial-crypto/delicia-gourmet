@@ -139,11 +139,12 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                  f"👉 Para realizar su pedido pulse /pedido y lo atenderemos. 📝\n\n"
                  f"📱 O también puede realizar su pedido desde nuestra Mini App 🔗"
           )
-    await update.message.reply_text(
-        mensaje, 
-        parse_mode="Markdown", 
-        reply_markup=reply_markup
-    )
+         
+          await update.message.reply_text(
+                 mensaje, 
+                 parse_mode="Markdown", 
+                 reply_markup=reply_markup
+             )
 
 async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.effective_user
