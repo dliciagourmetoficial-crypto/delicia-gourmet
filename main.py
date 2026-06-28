@@ -102,7 +102,7 @@ async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
         # Limpiamos la memoria
         del conversaciones_activas[admin_id]
     else:
-        await update.message.reply_text("No hay ningún chat activo para terminar.")
+        await update.message.reply_text("Comando no disponible")
 
 # --- Fin de Funciones ---
 
