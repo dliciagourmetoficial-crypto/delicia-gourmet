@@ -128,7 +128,7 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 keyboard = [[InlineKeyboardButton(text="Atender", callback_data=f"atender_{p['id']}")]]
                 await update.message.reply_text(f"🔔 Pedido de: {p['nombre']}", reply_markup=InlineKeyboardMarkup(keyboard))
     else:
-        # Lógica de cliente: Guardar en Sheet             
+        # Lógica de cliente: Guardar en Sheet
         ids_en_sheets = sheet.col_values(3) # Columna C
         
         if str(user.id) in ids_en_sheets:
@@ -140,28 +140,28 @@ async def pedido(update: Update, context: ContextTypes.DEFAULT_TYPE):
         else:
             # Si no existe, lo guardamos normalmente
             guardar_pedido_en_sheet(user.full_name, user.id)
-             
-         await update.message.reply_text(
-            "✅ **¡Pedido recibido con éxito!** 🎊\n\n"
-            "⏳ Está en la lista. En un momento nos pondremos en contacto con usted para confirmar los detalles. 🚀",
-            parse_mode="Markdown"
-        )
+            await update.message.reply_text(
+                "✅ **¡Pedido recibido con éxito!** 🎊\n\n"
+                "⏳ Está en la lista. En un momento nos pondremos en contacto con usted para confirmar los detalles. 🚀",
+                parse_mode="Markdown"
+            )
 
-        nombre_codificado = user.full_name.replace(' ', '%20') # Reemplazamos espacios por %20 para la URL
-        url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={nombre_codificado}"
-        
-        keyboard = [[InlineKeyboardButton(text="Agregar a la pagina", url=url_chat)]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        
-        for admin_id in ADMINS:
-            try:
-                await context.bot.send_message(
-                    chat_id=admin_id,
-                    text=f"🔔 Nuevo pedido manual:\n\n👤 Cliente: {user.full_name}\n🆔 ID: {user.id}",
-                    reply_markup=reply_markup
-                )
-            except Exception as e:
-                logging.error(f"No se pudo enviar aviso al admin {admin_id}: {e}")
+            # Notificar al admin
+            nombre_codificado = user.full_name.replace(' ', '%20')
+            url_chat = f"https://delicia-gourmet.gt.tc/cliente.php?chat_id={user.id}&nombre={nombre_codificado}"
+            
+            keyboard = [[InlineKeyboardButton(text="Agregar a la pagina", url=url_chat)]]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+            
+            for admin_id in ADMINS:
+                try:
+                    await context.bot.send_message(
+                        chat_id=admin_id,
+                        text=f"🔔 Nuevo pedido manual:\n\n👤 Cliente: {user.full_name}\n🆔 ID: {user.id}",
+                        reply_markup=reply_markup
+                    )
+                except Exception as e:
+                    logging.error(f"No se pudo enviar aviso al admin {admin_id}: {e}")
                      
 
 if __name__ == '__main__':
