@@ -65,7 +65,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if destinatario_id:
         # --- Lógica de reenvío de archivos ---
         if message.text:
-            await context.bot.send_message(destinatario_id, f"{update.effective_user.first_name}:\n {message.text}")
+            await context.bot.send_message(destinatario_id, f"👤 *{update.effective_user.first_name}:*\n {message.text}")
         elif message.photo:
             await context.bot.send_photo(destinatario_id, message.photo[-1].file_id, caption=message.caption)
         elif message.document:
@@ -76,6 +76,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_animation(destinatario_id, message.animation.file_id, caption=message.caption)
         elif message.audio:
             await context.bot.send_audio(destinatario_id, message.audio.file_id)
+        elif message.voice:
+            await context.bot.send_voice(destinatario_id, message.voice.file_id)
         elif message.video:
             await context.bot.send_video(destinatario_id, message.video.file_id, caption=message.caption)
 
