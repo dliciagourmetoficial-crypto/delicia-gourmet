@@ -79,7 +79,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             destinatario_id = admin_id
             
     if destinatario_id:
-        # --- Lógica de reenvío de archivos ---
+            await context.bot.send_chat_action(chat_id=destinatario_id, action="typing")
         if message.text:
             await context.bot.send_message(destinatario_id, 
                 f"<b>{update.effective_user.first_name}:</b>\n{message.text}", 
@@ -98,6 +98,8 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_voice(destinatario_id, message.voice.file_id)
         elif message.video:
             await context.bot.send_video(destinatario_id, message.video.file_id, caption=message.caption)
+        elif message.location:
+            await context.bot.send_location(destinatario_id, latitude=message.location.latitude, longitude=message.location.longitude)
 
 async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.effective_user.id
