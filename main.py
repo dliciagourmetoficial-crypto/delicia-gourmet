@@ -100,6 +100,13 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_video(destinatario_id, message.video.file_id, caption=message.caption)
         elif message.location: # Para Ubicacion
             await context.bot.send_location(destinatario_id, latitude=message.location.latitude, longitude=message.location.longitude)
+    else:
+        # 3. NUEVO: Si no hay chat activo y el usuario es cliente, avisar a todos los admins
+        if user_id not in ADMINS:
+            for admin_id in ADMINS:
+                await context.bot.send_message(admin_id, f"🔔 Mensaje nuevo de {update.effective_user.full_name} (Sin chat activo).")
+                # Reenviamos el contenido para que vean qué quiere
+                await context.bot.forward_message(admin_id, user_id, message.message_id)
 
 async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
     admin_id = update.effective_user.id
