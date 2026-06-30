@@ -79,7 +79,7 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             destinatario_id = admin_id
             
     if destinatario_id:
-            await context.bot.send_chat_action(chat_id=destinatario_id, action="typing")
+        await context.bot.send_chat_action(chat_id=destinatario_id, action="typing")
         if message.text:
             await context.bot.send_message(destinatario_id, 
                 f"<b>{update.effective_user.first_name}:</b>\n{message.text}", 
