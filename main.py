@@ -84,21 +84,21 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await context.bot.send_message(destinatario_id, 
                 f"<b>{update.effective_user.first_name}:</b>\n{message.text}", 
                 parse_mode="HTML")
-        elif message.photo:
+        elif message.photo: # Para Fotos
             await context.bot.send_photo(destinatario_id, message.photo[-1].file_id, caption=message.caption)
-        elif message.document:
+        elif message.document: # Para Documentos
             await context.bot.send_document(destinatario_id, message.document.file_id, caption=message.caption)
-        elif message.sticker:
+        elif message.sticker: # Para Stikers
             await context.bot.send_sticker(destinatario_id, message.sticker.file_id)
         elif message.animation: # Para GIFs
             await context.bot.send_animation(destinatario_id, message.animation.file_id, caption=message.caption)
-        elif message.audio:
+        elif message.audio: # Para Audio
             await context.bot.send_audio(destinatario_id, message.audio.file_id)
-        elif message.voice:
+        elif message.voice: # Para Chat de Audio
             await context.bot.send_voice(destinatario_id, message.voice.file_id)
-        elif message.video:
+        elif message.video: # Para Video
             await context.bot.send_video(destinatario_id, message.video.file_id, caption=message.caption)
-        elif message.location:
+        elif message.location: # Para Ubicacion
             await context.bot.send_location(destinatario_id, latitude=message.location.latitude, longitude=message.location.longitude)
 
 async def terminar_chat(update: Update, context: ContextTypes.DEFAULT_TYPE):
